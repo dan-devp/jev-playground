@@ -1,0 +1,46 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.2.0-M2'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.devp'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	typesafeVersion = '0.4.0'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springaicommunity:typesafe-bom:${typesafeVersion}"
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springaicommunity:spring-ai-starter-typesafe'
+	// Only for the Jev patterns (JevConsistency, JevConfidenceGate, JevCompositeScore), which
+	// depend on the SDK alone. The playground uses no chat model, so Spring AI itself stays out.
+	implementation('org.springaicommunity:typesafe-spring-ai') {
+		exclude group: 'org.springframework.ai'
+	}
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
